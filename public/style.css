@@ -1,0 +1,352 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #1a1a1a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url('sfondo-horror.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* Fissa lo sfondo */
+}
+
+/* Stile per l'header */
+header {
+  background-color: #222;
+  padding: 10px 20px;
+  text-align: center;
+  width: 90%; /* Larghezza uguale al container */
+  max-width: 1200px; /* Larghezza massima uguale al container */
+  margin: 0 auto; /* Centra l'header */
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 2px solid #ff4444;
+  box-sizing: border-box; /* Include padding e bordi nella larghezza */
+}
+
+#loginBtn {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  background-color: #ff4444;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#loginBtn:hover {
+  background-color: #cc0000;
+}
+
+/* Stile per il container principale */
+
+.container {
+  width: 60%;
+  max-width: 1200px;
+  margin: 80px auto 20px;
+  padding: 20px;
+  background-color: rgba(34, 34, 34, 0.9);
+  border-radius: 10px;
+  /*box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); */
+  display: flex; /* Usa Flexbox per allineare le colonne */
+  height: calc(100vh - 160px); /* Altezza fissa per il container */
+}
+
+/* Stile per la colonna sinistra */
+#sidebar {
+  width: 25%; /* Larghezza della colonna sinistra */
+  background-color: #222;
+  padding: 20px;
+  border-radius: 10px;
+  border-right: 2px solid #ff4444;
+  margin-right: 20px; /* Spazio tra le colonne */
+  overflow-y: auto; /* Abilita lo scroll verticale */
+  height: 100%; /* Altezza fissa per la colonna sinistra */
+}
+
+#sidebar h2 {
+  margin-top: 0;
+  color: #ff4444;
+}
+
+#post-list {
+  list-style: none;
+  padding: 0;
+}
+
+#post-list li {
+  margin: 10px 0;
+  cursor: pointer;
+  color: #ff4444;
+}
+
+#post-list li:hover {
+  color: #cc0000;
+}
+
+/* Stile per la colonna destra */
+#content {
+  width: 75%; /* Larghezza della colonna destra */
+  padding: 20px;
+  background-color: #333;
+  border-radius: 10px;
+  border-left: 2px solid #ff4444;
+  overflow-y: auto; /* Abilita lo scroll verticale */
+  height: 100%; /* Altezza fissa per la colonna destra */
+}
+
+#editor-container {
+  margin-bottom: 20px;
+}
+
+/* Stile per i post */
+.post {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ff4444; /* Linea di separazione */
+}
+
+/* Rimuovi il bordo dall'ultimo post */
+.post:last-child {
+  border-bottom: none;
+}
+
+#post-content {
+  background-color: #444;
+  padding: 20px;
+  border-radius: 5px;
+  border: 1px solid #ff4444;
+}
+
+/* Stile per la finestra modale */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+  background-color: #222;
+  margin: 15% auto;
+  padding: 20px;
+  border: 2px solid #ff4444;
+  width: 300px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ff4444;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  background-color: #ff4444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #cc0000;
+}
+
+.close {
+  color: #ff4444;
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #fff;
+}
+
+.close {
+  color: #ff4444;
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #fff;
+}
+
+.post img {
+  max-width: 100%; /* Larghezza massima del 100% del contenitore */
+  height: auto; /* Altezza automatica per mantenere le proporzioni */
+  display: block; /* Rimuove lo spazio extra sotto le immagini */
+  margin: 10px 0; /* Aggiunge un po' di spazio sopra e sotto le immagini */
+}
+
+#loginForm input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ff4444;
+  border-radius: 5px;
+  background-color: #333;
+  color: #ff4444;
+}
+
+#loginForm button {
+  width: 100%;
+  padding: 10px;
+  background-color: #ff4444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#loginForm button:hover {
+  background-color: #cc0000;
+}
+
+/* Stile per l'editor */
+#editor-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #444;
+  border-radius: 10px;
+  border: 1px solid #ff4444;
+}
+
+#editor {
+  height: 500px; /* Altezza dell'editor */
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #ff4444;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+#savePostBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ff4444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#savePostBtn:hover {
+  background-color: #cc0000;
+}
+
+/* Stile per il logout */
+#logoutBtn {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#logoutBtn:hover {
+  background-color: #c82333;
+}
+
+/* Stile per il contenuto dell'editor */
+.ql-editor {
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+.ql-toolbar {
+  background-color: #333;
+  border: 1px solid #ff4444;
+  border-radius: 5px 5px 0 0;
+}
+
+.ql-container {
+  border: 1px solid #ff4444;
+  border-radius: 0 0 5px 5px;
+}
+
+/* Stile per la data di creazione */
+.post small {
+  display: block;
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 0.9em;
+}
+
+/* Stile per il footer */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%; /* Centra il footer */
+  transform: translateX(-50%); /* Sposta il footer indietro del 50% della sua larghezza */
+  width: 90%; /* Larghezza uguale al container */
+  max-width: 1200px; /* Larghezza massima uguale al container */
+  background-color: #222;
+  padding: 10px 20px;
+  text-align: center;
+  border-top: 2px solid #ff4444;
+  z-index: 1000;
+  box-sizing: border-box; /* Include padding e bordi nella larghezza */
+}
+
+/* Stile per il contenitore dei pulsanti nel footer */
+.footer-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Spazio tra i pulsanti */
+}
+
+/* Stile per i pulsanti nel footer */
+footer button {
+  padding: 10px 20px;
+  background-color: #ff4444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+footer button:hover {
+  background-color: #cc0000;
+}
+
+/* Stile per il campo di input del titolo */
+#postTitle {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ff4444;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+  font-size: 16px;
+}
+
+#postTitle::placeholder {
+  color: #888;
+}

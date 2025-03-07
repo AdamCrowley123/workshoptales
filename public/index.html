@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horror Blog</title>
+  <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Includi Quill CSS -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Modal di login -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Login Admin</h2>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <header>
+    <h1>Horror Blog</h1>
+  </header>
+
+  <div class="container">
+    <aside id="sidebar">
+      <h2>Storie</h2>
+      <ul id="post-list"></ul>
+    </aside>
+
+    <main id="content">
+      <div id="posts-container"></div>
+    </main>
+  </div>
+
+<!-- Footer con pulsanti di login/logout e crea post -->
+<footer>
+  <div class="footer-buttons">
+    <button id="loginBtn">Login Admin</button>
+    <button id="logoutBtn" style="display: none;">Logout</button>
+    <button id="createPostBtn" style="display: none;">Crea Post</button>
+  </div>
+</footer>
+
+  <!-- Script Firebase (modulare) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDn6WURTmj-_anuNTr3m6OIchBiuywXv1I", // Sostituisci con la tua chiave API
+      authDomain: "horrorblog-e526c.firebaseapp.com",
+      projectId: "horrorblog-e526c",
+      storageBucket: "horrorblog-e526c.appspot.com",
+      messagingSenderId: "111383678612793336542",
+      appId: "1:111383678612793336542:web:abc123def456"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Esponi auth e funzioni per l'uso in script.js
+    window.auth = auth;
+    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.onAuthStateChanged = onAuthStateChanged;
+    window.signOut = signOut;
+  </script>
+
+  <!-- Script personalizzato -->
+  <script src="script.js" type="module"></script>
+</body>
+</html>

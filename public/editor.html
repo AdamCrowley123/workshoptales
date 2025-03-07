@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor Post</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Includi Quill CSS -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Editor Post</h1>
+    <button id="logoutBtn">Logout</button>
+  </header>
+
+  <div class="container">
+    <main id="content">
+      <div id="editor-container">
+        <!-- Campo di input per il titolo del post -->
+        <input type="text" id="postTitle" placeholder="Inserisci il titolo del post" required>
+        <!-- Editor di testo Quill -->
+        <div id="editor"></div>
+        <!-- Pulsante per salvare il post -->
+        <button id="savePostBtn">Salva Post</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Finestra modale per l'inserimento dell'URL dell'immagine -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Inserisci l'URL dell'immagine</h2>
+      <input type="text" id="imageUrl" placeholder="Incolla l'URL dell'immagine qui">
+      <button id="insertImageBtn">Inserisci</button>
+    </div>
+  </div>
+
+  <!-- Script Firebase (modulare) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDn6WURTmj-_anuNTr3m6OIchBiuywXv1I", // Sostituisci con la tua chiave API
+      authDomain: "horrorblog-e526c.firebaseapp.com",
+      projectId: "horrorblog-e526c",
+      storageBucket: "horrorblog-e526c.appspot.com",
+      messagingSenderId: "111383678612793336542",
+      appId: "1:111383678612793336542:web:abc123def456"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Esponi auth e funzioni per l'uso globale
+    window.auth = auth;
+    window.onAuthStateChanged = onAuthStateChanged;
+    window.signOut = signOut;
+  </script>
+
+  <!-- Script Quill -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+  <!-- Script personalizzato -->
+  <script src="editor.js" type="module"></script>
+</body>
+</html>
