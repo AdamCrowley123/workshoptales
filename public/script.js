@@ -3,14 +3,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebas
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
-// Configura Firebase
+// Configura Firebase utilizzando le variabili d'ambiente
 const firebaseConfig = {
-  apiKey: "AIzaSyDn6WURTmj-_anuNTr3m6OIchBiuywXv1I", // Sostituisci con la tua chiave API
-  authDomain: "horrorblog-e526c.firebaseapp.com",
-  projectId: "horrorblog-e526c",
-  storageBucket: "horrorblog-e526c.appspot.com",
-  messagingSenderId: "111383678612793336542",
-  appId: "1:111383678612793336542:web:abc123def456"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Inizializza Firebase
