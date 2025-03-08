@@ -27,11 +27,6 @@ async function initializeFirebase() {
 
 initializeFirebase(); // Chiama la funzione per inizializzare Firebase
 
-// ... (resto del codice)
-
-console.log('Script caricato correttamente'); // Debug
-
-
 // Elementi del DOM
 const postList = document.getElementById('post-list');
 const postsContainer = document.getElementById('posts-container');
