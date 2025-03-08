@@ -1,6 +1,7 @@
 // Importa le funzioni di Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
 // Configura Firebase
 const firebaseConfig = {
@@ -15,6 +16,7 @@ const firebaseConfig = {
 // Inizializza Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 console.log('Script caricato correttamente'); // Debug
 
@@ -26,6 +28,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 const loginModal = document.getElementById('loginModal');
 const closeModal = document.querySelector('.close');
 const loginForm = document.getElementById('loginForm');
+const createPostBtn = document.getElementById('createPostBtn');
 
 // Carica i post all'avvio
 window.addEventListener('load', () => {
@@ -33,14 +36,15 @@ window.addEventListener('load', () => {
   loadPosts();
 });
 
-// Carica i post
+// Carica i post da Firestore
 async function loadPosts() {
   try {
-    const response = await fetch('/api/posts');
-    if (!response.ok) {
-      throw new Error('Errore durante il caricamento dei post');
-    }
-    const posts = await response.json();
+    // Ottieni i documenti dalla collezione "posts"
+    const querySnapshot = await getDocs(collection(db, "posts"));
+    const posts = [];
+    querySnapshot.forEach((doc) => {
+      posts.push({ id: doc.id, ...doc.data() });
+    });
     console.log('Post caricati:', posts); // Debug
 
     // Mostra tutti i post in homepage
@@ -84,49 +88,23 @@ async function loadPosts() {
   }
 }
 
-// Mostra il contenuto di un post
-async function showPost(postId) {
-  try {
-    const response = await fetch(`/api/posts/${postId}`);
-    if (!response.ok) {
-      throw new Error('Errore durante il caricamento del post');
+// Cancella un post da Firestore
+async function deletePost(postId) {
+  if (confirm('Sei sicuro di voler cancellare questo post?')) {
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Devi essere loggato per cancellare un post');
+      return;
     }
-    const post = await response.json();
 
-    // Crea un nuovo elemento per il post selezionato
-    const selectedPost = document.createElement('div');
-    selectedPost.classList.add('post');
-    selectedPost.setAttribute('data-id', post.id);
-    selectedPost.innerHTML = `
-      <h2>${post.title}</h2>
-      <small>${post.createdAt}</small>
-      <div>${post.content}</div>
-      ${auth.currentUser ? `
-        <button class="edit-btn" data-id="${post.id}">Modifica</button>
-        <button class="delete-btn" data-id="${post.id}">Cancella</button>
-      ` : ''}
-    `;
-
-    // Aggiungi il post selezionato in cima alla lista
-    postsContainer.prepend(selectedPost);
-
-    // Aggiungi eventi ai pulsanti "Modifica" e "Cancella"
-    selectedPost.querySelectorAll('.edit-btn').forEach(button => {
-      button.addEventListener('click', (e) => {
-        const postId = e.target.getAttribute('data-id');
-        window.location.href = `/editor.html?postId=${postId}`;
-      });
-    });
-
-    selectedPost.querySelectorAll('.delete-btn').forEach(button => {
-      button.addEventListener('click', (e) => {
-        const postId = e.target.getAttribute('data-id');
-        deletePost(postId);
-      });
-    });
-  } catch (error) {
-    console.error('Errore durante il caricamento del post:', error);
-    alert('Errore durante il caricamento del post');
+    try {
+      await deleteDoc(doc(db, "posts", postId));
+      alert('Post cancellato con successo!');
+      loadPosts(); // Ricarica i post
+    } catch (error) {
+      console.error('Errore:', error);
+      alert('Errore durante la cancellazione del post');
+    }
   }
 }
 
@@ -134,17 +112,6 @@ async function showPost(postId) {
 loginBtn.addEventListener('click', () => {
   console.log('Pulsante Login cliccato'); // Debug
   loginModal.style.display = 'block';
-});
-
-logoutBtn.addEventListener('click', async () => {
-  try {
-    await auth.signOut();
-    alert('Logout effettuato con successo!');
-    window.location.href = '/'; // Ricarica la homepage
-  } catch (error) {
-    console.error('Errore durante il logout:', error);
-    alert('Errore durante il logout');
-  }
 });
 
 // Chiudi il modal di login
@@ -169,37 +136,17 @@ loginForm.addEventListener('submit', async (e) => {
   }
 });
 
-// Cancella un post
-async function deletePost(postId) {
-  if (confirm('Sei sicuro di voler cancellare questo post?')) {
-    const user = auth.currentUser;
-    if (!user) {
-      alert('Devi essere loggato per cancellare un post');
-      return;
-    }
-
-    const idToken = await user.getIdToken();
-
-    try {
-      const response = await fetch(`/api/posts/${postId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': idToken,
-        },
-      });
-
-      if (response.ok) {
-        alert('Post cancellato con successo!');
-        loadPosts(); // Ricarica i post
-      } else {
-        alert('Errore durante la cancellazione del post');
-      }
-    } catch (error) {
-      console.error('Errore:', error);
-      alert('Errore durante la cancellazione del post');
-    }
+// Gestisci il logout
+logoutBtn.addEventListener('click', async () => {
+  try {
+    await signOut(auth);
+    alert('Logout effettuato con successo!');
+    window.location.href = '/'; // Ricarica la homepage
+  } catch (error) {
+    console.error('Errore durante il logout:', error);
+    alert('Errore durante il logout');
   }
-}
+});
 
 // Controlla se l'utente è loggato
 onAuthStateChanged(auth, (user) => {
