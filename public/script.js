@@ -36,7 +36,6 @@ window.addEventListener('load', () => {
   loadPosts();
 });
 
-// Carica i post da Firestore
 async function loadPosts() {
   try {
     // Mostra il loader

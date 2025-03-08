@@ -122,40 +122,40 @@ onAuthStateChanged(auth, (user) => {
 
 // Gestisci il salvataggio del post
 savePostBtn.addEventListener('click', async () => {
-  const content = quill.root.innerHTML;
-  const title = document.getElementById('postTitle').value;
-
-  if (title) {
-    const user = auth.currentUser;
-    if (!user) {
-      alert('Devi essere loggato per creare un post');
-      return;
-    }
-
-    try {
-      const postData = {
-        title,
-        content,
-        createdAt: new Date().toISOString(),
-        author: user.email,
-      };
-
-      if (postId) {
-        // Modifica un post esistente
-        await updateDoc(doc(db, "posts", postId), postData);
-        alert('Post modificato con successo!');
-      } else {
-        // Crea un nuovo post
-        await addDoc(collection(db, "posts"), postData);
-        alert('Post creato con successo!');
+    const content = quill.root.innerHTML;
+    const title = document.getElementById('postTitle').value;
+  
+    if (title) {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Devi essere loggato per creare un post');
+        return;
       }
-
-      window.location.href = '/'; // Torna alla homepage
-    } catch (error) {
-      console.error('Errore:', error);
-      alert('Errore durante il salvataggio del post');
+  
+      try {
+        const postData = {
+          title,
+          content,
+          createdAt: new Date().toISOString(), // Salva la data in formato UTC
+          author: user.email,
+        };
+  
+        if (postId) {
+          // Modifica un post esistente
+          await updateDoc(doc(db, "posts", postId), postData);
+          alert('Post modificato con successo!');
+        } else {
+          // Crea un nuovo post
+          await addDoc(collection(db, "posts"), postData);
+          alert('Post creato con successo!');
+        }
+  
+        window.location.href = '/'; // Torna alla homepage
+      } catch (error) {
+        console.error('Errore:', error);
+        alert('Errore durante il salvataggio del post');
+      }
+    } else {
+      alert('Inserisci un titolo per il post');
     }
-  } else {
-    alert('Inserisci un titolo per il post');
-  }
-});
+  });
