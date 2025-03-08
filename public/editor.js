@@ -1,6 +1,7 @@
 // Importa le funzioni di Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
 // Configura Firebase
 const firebaseConfig = {
@@ -15,6 +16,7 @@ const firebaseConfig = {
 // Inizializza Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 console.log('Editor script caricato correttamente'); // Debug
 
@@ -51,13 +53,14 @@ if (postId) {
 // Funzione per caricare il post da modificare
 async function loadPostForEditing(postId) {
   try {
-    const response = await fetch(`/api/posts/${postId}`);
-    if (!response.ok) {
-      throw new Error('Errore durante il caricamento del post');
+    const postDoc = await getDoc(doc(db, "posts", postId));
+    if (postDoc.exists()) {
+      const post = postDoc.data();
+      quill.root.innerHTML = post.content; // Carica il contenuto nell'editor
+      document.getElementById('postTitle').value = post.title; // Carica il titolo
+    } else {
+      alert('Post non trovato');
     }
-    const post = await response.json();
-    quill.root.innerHTML = post.content; // Carica il contenuto nell'editor
-    document.getElementById('postTitle').value = post.title; // Carica il titolo
   } catch (error) {
     console.error('Errore durante il caricamento del post:', error); // Debug
     alert('Errore durante il caricamento del post');
@@ -73,10 +76,23 @@ quill.getModule('toolbar').addHandler('image', () => {
 insertImageBtn.addEventListener('click', () => {
   const imageUrl = imageUrlInput.value;
   if (imageUrl) {
-    const range = quill.getSelection(); // Ottieni la posizione del cursore
-    quill.insertEmbed(range.index, 'image', imageUrl); // Inserisci l'immagine
-    imageModal.style.display = 'none'; // Chiudi la finestra modale
-    imageUrlInput.value = ''; // Resetta il campo di input
+    // Assicurati che l'editor abbia il focus
+    quill.focus();
+
+    // Ottieni la posizione del cursore
+    const range = quill.getSelection();
+
+    // Se non c'è una selezione valida, inserisci l'immagine alla fine del contenuto
+    const index = range ? range.index : quill.getLength();
+
+    // Inserisci l'immagine
+    quill.insertEmbed(index, 'image', imageUrl);
+
+    // Chiudi la finestra modale
+    imageModal.style.display = 'none';
+
+    // Resetta il campo di input
+    imageUrlInput.value = '';
   } else {
     alert('Inserisci un URL valido per l\'immagine');
   }
@@ -107,7 +123,7 @@ onAuthStateChanged(auth, (user) => {
 // Gestisci il salvataggio del post
 savePostBtn.addEventListener('click', async () => {
   const content = quill.root.innerHTML;
-  const title = document.getElementById('postTitle').value; // Ottieni il titolo dal campo di input
+  const title = document.getElementById('postTitle').value;
 
   if (title) {
     const user = auth.currentUser;
@@ -116,27 +132,25 @@ savePostBtn.addEventListener('click', async () => {
       return;
     }
 
-    const idToken = await user.getIdToken();
-
     try {
-      const method = postId ? 'PUT' : 'POST'; // Usa PUT per modificare, POST per creare
-      const url = postId ? `/api/posts/${postId}` : '/api/posts';
+      const postData = {
+        title,
+        content,
+        createdAt: new Date().toISOString(),
+        author: user.email,
+      };
 
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': idToken,
-        },
-        body: JSON.stringify({ title, content }),
-      });
-
-      if (response.ok) {
-        alert('Post salvato con successo!');
-        window.location.href = '/'; // Torna alla homepage
+      if (postId) {
+        // Modifica un post esistente
+        await updateDoc(doc(db, "posts", postId), postData);
+        alert('Post modificato con successo!');
       } else {
-        alert('Errore durante il salvataggio del post');
+        // Crea un nuovo post
+        await addDoc(collection(db, "posts"), postData);
+        alert('Post creato con successo!');
       }
+
+      window.location.href = '/'; // Torna alla homepage
     } catch (error) {
       console.error('Errore:', error);
       alert('Errore durante il salvataggio del post');
