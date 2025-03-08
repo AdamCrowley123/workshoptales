@@ -11,7 +11,7 @@ async function initializeFirebase() {
     const firebaseConfig = await getFirebaseConfig(); // Ottieni le variabili d'ambiente dal backend
 
     // Inizializza Firebase
-    app = initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
 
@@ -26,6 +26,11 @@ async function initializeFirebase() {
 }
 
 initializeFirebase(); // Chiama la funzione per inizializzare Firebase
+
+// ... (resto del codice)
+
+console.log('Script caricato correttamente'); // Debug
+
 
 // Elementi del DOM
 const postList = document.getElementById('post-list');
