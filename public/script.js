@@ -1,17 +1,10 @@
+// Importa la configurazione di Firebase
+import { firebaseConfig } from './config.js';
+
 // Importa le funzioni di Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
-
-// Configura Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDn6WURTmj-_anuNTr3m6OIchBiuywXv1I", // Sostituisci con la tua chiave API
-  authDomain: "horrorblog-e526c.firebaseapp.com",
-  projectId: "horrorblog-e526c",
-  storageBucket: "horrorblog-e526c.appspot.com",
-  messagingSenderId: "111383678612793336542",
-  appId: "1:111383678612793336542:web:abc123def456"
-};
 
 // Inizializza Firebase
 const app = initializeApp(firebaseConfig);
@@ -36,6 +29,7 @@ window.addEventListener('load', () => {
   loadPosts();
 });
 
+// Carica i post da Firestore
 async function loadPosts() {
   try {
     // Mostra il loader
