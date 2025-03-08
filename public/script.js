@@ -12,8 +12,8 @@ async function initializeFirebase() {
 
     // Inizializza Firebase
     const app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db = getFirestore(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
     console.log('Firebase inizializzato correttamente'); // Debug
 
