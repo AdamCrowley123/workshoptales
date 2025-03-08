@@ -15,6 +15,13 @@ async function initializeFirebase() {
 
     console.log('Firebase inizializzato correttamente'); // Debug
 
+    // Aspetta che Firestore sia correttamente inizializzato prima di caricare i post
+    if (db) {
+      loadPosts();
+    } else {
+      console.error("Errore: Firestore non è stato inizializzato correttamente.");
+    }
+
     // Ora che auth è definito, possiamo usare onAuthStateChanged
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -30,13 +37,12 @@ async function initializeFirebase() {
       }
     });
 
-    // Carica i post
-    loadPosts();
   } catch (error) {
     console.error('Errore durante l\'inizializzazione di Firebase:', error);
     alert('Errore durante l\'inizializzazione di Firebase');
   }
 }
+
 
 
 initializeFirebase(); // Chiama la funzione per inizializzare Firebase
