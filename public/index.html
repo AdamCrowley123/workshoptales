@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Horror Blog</title>
   <link rel="stylesheet" href="style.css">
-    <!-- Favicon -->
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <!-- Includi Quill CSS -->
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -24,6 +24,9 @@
     </div>
   </div>
 
+  <!-- Loader -->
+  <div id="loader" class="loader">Caricamento in corso...</div>
+
   <header>
     <h1>Horror Blog</h1>
   </header>
@@ -39,20 +42,23 @@
     </main>
   </div>
 
-<!-- Footer con pulsanti di login/logout e crea post -->
-<footer>
-  <div class="footer-buttons">
-    <button id="loginBtn">Login Admin</button>
-    <button id="logoutBtn" style="display: none;">Logout</button>
-    <button id="createPostBtn" style="display: none;">Crea Post</button>
-  </div>
-</footer>
+  <!-- Footer con pulsanti di login/logout e crea post -->
+  <footer>
+    <div class="footer-buttons">
+      <button id="loginBtn">Login Admin</button>
+      <button id="logoutBtn" style="display: none;">Logout</button>
+      <button id="createPostBtn" style="display: none;">Crea Post</button>
+    </div>
+  </footer>
 
   <!-- Script Firebase (modulare) -->
   <script type="module">
+    // Importa le funzioni di Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
+    // Configura Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDn6WURTmj-_anuNTr3m6OIchBiuywXv1I", // Sostituisci con la tua chiave API
       authDomain: "horrorblog-e526c.firebaseapp.com",
@@ -62,14 +68,22 @@
       appId: "1:111383678612793336542:web:abc123def456"
     };
 
+    // Inizializza Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Esponi auth e funzioni per l'uso in script.js
+    // Esponi auth, db e funzioni per l'uso in script.js
     window.auth = auth;
+    window.db = db;
     window.signInWithEmailAndPassword = signInWithEmailAndPassword;
     window.onAuthStateChanged = onAuthStateChanged;
     window.signOut = signOut;
+    window.getFirestore = getFirestore;
+    window.collection = collection;
+    window.getDocs = getDocs;
+    window.doc = doc;
+    window.deleteDoc = deleteDoc;
   </script>
 
   <!-- Script personalizzato -->
