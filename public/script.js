@@ -1,19 +1,27 @@
-import { firebaseConfig } from './config.js';
+// script.js
+import { getFirebaseConfig } from './config.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
-// script.js
 async function initializeFirebase() {
-  const response = await fetch('/config');
-  const firebaseConfig = await response.json();
+  const firebaseConfig = await getFirebaseConfig(); // Ottieni le variabili d'ambiente dal backend
 
+  // Inizializza Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  console.log('Firebase inizializzato correttamente'); // Debug
+
+  // Esponi auth e db per l'uso nel resto del codice
+  window.auth = auth;
+  window.db = db;
 }
 
-initializeFirebase();
+initializeFirebase(); // Chiama la funzione per inizializzare Firebase
+
+// ... (resto del codice)
 
 console.log('Script caricato correttamente'); // Debug
 
