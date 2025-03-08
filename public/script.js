@@ -46,7 +46,17 @@ async function loadPosts() {
     const querySnapshot = await getDocs(collection(db, "posts"));
     const posts = [];
     querySnapshot.forEach((doc) => {
-      posts.push({ id: doc.id, ...doc.data() });
+      const postData = doc.data();
+      // Converti la data UTC in una data locale italiana
+      const localDate = new Date(postData.createdAt).toLocaleString('it-IT', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      posts.push({ id: doc.id, ...postData, createdAt: localDate });
     });
 
     // Ordina i post per data di creazione (dal più recente al più vecchio)
