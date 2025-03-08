@@ -4,19 +4,25 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebas
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
 import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
+let auth, db; // Dichiarazione delle variabili globali
+
 async function initializeFirebase() {
-  const firebaseConfig = await getFirebaseConfig(); // Ottieni le variabili d'ambiente dal backend
+  try {
+    const firebaseConfig = await getFirebaseConfig(); // Ottieni le variabili d'ambiente dal backend
 
-  // Inizializza Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    // Inizializza Firebase
+    const app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
 
-  console.log('Firebase inizializzato correttamente'); // Debug
+    console.log('Firebase inizializzato correttamente'); // Debug
 
-  // Esponi auth e db per l'uso nel resto del codice
-  window.auth = auth;
-  window.db = db;
+    // Carica i post dopo l'inizializzazione di Firebase
+    loadPosts();
+  } catch (error) {
+    console.error('Errore durante l\'inizializzazione di Firebase:', error);
+    alert('Errore durante l\'inizializzazione di Firebase');
+  }
 }
 
 initializeFirebase(); // Chiama la funzione per inizializzare Firebase
