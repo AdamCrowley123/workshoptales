@@ -1,7 +1,7 @@
 // Importa le funzioni di Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
 // Configura Firebase
 const firebaseConfig = {
@@ -39,12 +39,19 @@ window.addEventListener('load', () => {
 // Carica i post da Firestore
 async function loadPosts() {
   try {
+    // Mostra il loader
+    document.getElementById('loader').style.display = 'block';
+
     // Ottieni i documenti dalla collezione "posts"
     const querySnapshot = await getDocs(collection(db, "posts"));
     const posts = [];
     querySnapshot.forEach((doc) => {
       posts.push({ id: doc.id, ...doc.data() });
     });
+
+    // Ordina i post per data di creazione (dal più recente al più vecchio)
+    posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     console.log('Post caricati:', posts); // Debug
 
     // Mostra tutti i post in homepage
@@ -85,6 +92,9 @@ async function loadPosts() {
   } catch (error) {
     console.error('Errore durante il caricamento dei post:', error); // Debug
     alert('Errore durante il caricamento dei post');
+  } finally {
+    // Nascondi il loader
+    document.getElementById('loader').style.display = 'none';
   }
 }
 
