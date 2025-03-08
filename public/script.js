@@ -6,6 +6,7 @@ import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, updateDoc } 
 
 let auth, db; // Dichiarazione delle variabili globali
 
+// Carica i post solo dopo l'inizializzazione di Firebase
 async function initializeFirebase() {
   try {
     const firebaseConfig = await getFirebaseConfig();
@@ -15,14 +16,7 @@ async function initializeFirebase() {
 
     console.log('Firebase inizializzato correttamente'); // Debug
 
-    // Aspetta che Firestore sia correttamente inizializzato prima di caricare i post
-    if (db) {
-      loadPosts();
-    } else {
-      console.error("Errore: Firestore non è stato inizializzato correttamente.");
-    }
-
-    // Ora che auth è definito, possiamo usare onAuthStateChanged
+    // Controllo dello stato dell'utente
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log('Utente loggato:', user.email);
@@ -37,13 +31,14 @@ async function initializeFirebase() {
       }
     });
 
+    // **Carica i post solo ora, quando db è sicuro di essere stato inizializzato**
+    loadPosts();
+
   } catch (error) {
     console.error('Errore durante l\'inizializzazione di Firebase:', error);
     alert('Errore durante l\'inizializzazione di Firebase');
   }
 }
-
-
 
 initializeFirebase(); // Chiama la funzione per inizializzare Firebase
 
@@ -62,11 +57,6 @@ const closeModal = document.querySelector('.close');
 const loginForm = document.getElementById('loginForm');
 const createPostBtn = document.getElementById('createPostBtn');
 
-// Carica i post all'avvio
-window.addEventListener('load', () => {
-  console.log('Pagina caricata'); // Debug
-  loadPosts();
-});
 
 // Carica i post da Firestore
 async function loadPosts() {
