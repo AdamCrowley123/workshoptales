@@ -61,31 +61,6 @@ app.get('/api/posts', async (req, res) => {
   }
 });
 
-//search mode
-
-app.get('/search', async (req, res) => {
-  const query = req.query.query.toLowerCase();
-  const snapshot = await db.collection("posts").get();
-  
-  const filteredPosts = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(post => post.title.toLowerCase().includes(query) || post.content.toLowerCase().includes(query));
-
-  res.json(filteredPosts);
-});
-
-app.get('/posts', async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 5;
-  
-  const snapshot = await db.collection("posts").orderBy("createdAt", "desc").offset((page - 1) * limit).limit(limit).get();
-  
-  const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  res.json(posts);
-});
-
-//
-
 // API per ottenere un singolo post
 app.get('/api/posts/:id', async (req, res) => {
   try {
