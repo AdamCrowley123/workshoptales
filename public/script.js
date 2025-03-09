@@ -130,6 +130,29 @@ async function loadPosts() {
   }
 }
 
+//paginazione
+
+document.addEventListener("DOMContentLoaded", async function () {
+  const searchInput = document.getElementById("search");
+  searchInput.addEventListener("input", async function () {
+      const searchTerm = searchInput.value.toLowerCase();
+      const response = await fetch(`/search?query=${searchTerm}`);
+      const posts = await response.json();
+      displayPosts(posts);
+  });
+});
+
+async function displayPosts(posts) {
+  const postContainer = document.getElementById("post-container");
+  postContainer.innerHTML = ""; // Pulisce i post esistenti
+  posts.forEach(post => {
+      const div = document.createElement("div");
+      div.innerHTML = `<h2>${post.title}</h2><p>${post.content}</p>`;
+      postContainer.appendChild(div);
+  });
+}
+
+
 // Cancella un post da Firestore
 async function deletePost(postId) {
   if (confirm('Sei sicuro di voler cancellare questo post?')) {
