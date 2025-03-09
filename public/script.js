@@ -130,7 +130,9 @@ async function loadPosts() {
   }
 }
 
-//paginazione
+
+
+//search mode
 
 document.addEventListener("DOMContentLoaded", async function () {
   const searchInput = document.getElementById("search");
@@ -141,6 +143,40 @@ document.addEventListener("DOMContentLoaded", async function () {
       displayPosts(posts);
   });
 });
+
+//paginazione
+
+let currentPage = 1;
+const postsPerPage = 5;
+
+async function loadPosts(page) {
+  console.log("Caricamento post pagina:", page); // Debug
+  const response = await fetch(`/posts?page=${page}&limit=5`);
+  const posts = await response.json();
+  console.log("Post ricevuti:", posts); // Debug
+  displayPosts(posts);
+}
+
+document.getElementById("search").addEventListener("input", async function () {
+  const searchTerm = this.value.toLowerCase();
+  console.log("Ricerca per:", searchTerm); // Debug
+  const response = await fetch(`/search?query=${searchTerm}`);
+  const posts = await response.json();
+  console.log("Risultati ricerca:", posts); // Debug
+  displayPosts(posts);
+});
+
+document.getElementById("loadMore").addEventListener("click", function () {
+    currentPage++;
+    loadPosts(currentPage);
+});
+
+// Carica i primi post all'avvio
+document.addEventListener("DOMContentLoaded", function () {
+    loadPosts(currentPage);
+});
+
+//
 
 async function displayPosts(posts) {
   const postContainer = document.getElementById("post-container");
